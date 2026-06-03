@@ -9,7 +9,7 @@
 * **Language:** Python
 * **Computer Vision:** OpenCV (Frame Differencing 기반 화면 전환 감지)
 * **Speech-to-Text:** OpenAI Whisper (Hugging Face)
-* **Vision-Language Model:** Qwen-VL (Qwen2.5-VL-7B-Instruct)
+* **Vision-Language Model:** Qwen-VL (Qwen2.5-VL-7B-Instruct or Qwen3.5-9B(4bit 양자화))
 
 ##  주요 파이프라인 프로세스
 1. **오디오/비디오 분리:** 업로드된 영상에서  오디오 추출 후 **Whisper** 구동 (타임스탬프 텍스트 추출).
