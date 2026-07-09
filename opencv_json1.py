@@ -14,7 +14,7 @@ def image_to_base64(frame_bgr):
     # 전송 용량 및 네트워크 효율성을 위해 메모리 상에서 .jpg 포맷으로 압축 수행
     # buffer 변수 안에 압축된 바이너리 이미지 데이터가 담김
     # buffer 변수는 데이터를 한 곳에서 다른 곳으로 전송하거나 처리하는 동안 일시적으로 데이터를 보관하는 메모리 공간
-    _, buffer = cv2.imencode('.jpg', frame_bgr)
+    _, buffer = cv2.imencode('.jpg', frame_rgb) #OpenCV 값이 RGB로 변환되지 않는 문제 수정
     
     # 바이너리 이미지 버퍼를 텍스트 문자열(ASCII) 형태로 변환하여 읽을 수 있게 최종 직렬화
     base64_string = base64.b64encode(buffer).decode('utf-8')
@@ -38,11 +38,16 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
     # OpenCV 비디오 캡처 객체 생성 (노트북에 위치한 비디오 파일 스트림 연결)
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
+        # 오류 처리: 비디오 파일을 열 수 없는 경우 
         print(" 비디오 파일을 열 수 없습니다. 경로 또는 파일명을 다시 확인하세요.")
         return "[]"
 
     # 원본 비디오의 초당 프레임 수(FPS) 추출 (시간 계산의 기준점)
     orig_fps = cap.get(cv2.CAP_PROP_FPS)
+    if orig_fps <= 0:
+        # 오류 처리: FPS가 0 이하이면 비디오 정보를 가져올 수 없는 경우
+        print(" 비디오 FPS 정보를 가져올 수 없습니다. 파일이 손상되었거나 지원되지 않는 코덱인지 확인하십시오.")
+        return "[]"
     
     # 캡처 결과 데이터 객체들을 차곡차곡 누적시킬 마스터 리스트 배열
     video_timeline_results = []
@@ -51,6 +56,7 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
     # 영상의 가장 첫 번째 프레임을 읽어와서 이전 기준점으로 삼음
     ret, prev_frame = cap.read()
     if not ret:
+        print(" 첫 번째 프레임을 읽어올 수 없습니다.")
         return "[]"
         
     # 컴퓨터가 화면 변화를 오차 없이 이해하도록 그레이스케일 변환
@@ -89,7 +95,7 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
         # 화면의 전체 픽셀 면적 중 흰색(화면이 바뀐 부분)이 차지하는 비율(%) 계산
         change_percentage = (cv2.countNonZero(thresh) / (gray.shape[0] * gray.shape[1])) * 100
         
-        # 계산된 변화율이 내가 설정한 임계값(8.0%)을 넘으면 PPT 슬라이드 전환으로 판단
+        # 계산된 변화율이 설정한 임계값(8.0%)을 넘으면 PPT 슬라이드 전환으로 판단
         is_scene_changed = change_percentage > scene_threshold
         
         # [루틴 B] 백엔드가 연동해준 Whisper AI의 확신도 낮음 구간(타겟 시간) 오차범위 0.2초 내 도달 여부 체크
