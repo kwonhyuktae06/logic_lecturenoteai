@@ -1,5 +1,5 @@
 from pydantic import BaseModel, HttpUrl
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -37,6 +37,20 @@ class UploadStatusResponse(BaseModel):
     error_message: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# 음성/이미지 처리 응답
+class PipelineResponse(BaseModel):
+    upload_id: str
+    status: str
+    transcript: str
+    analysis: str
+    image_count: int
+    audio_file_name: str
+    images: List[str]
 
     class Config:
         from_attributes = True

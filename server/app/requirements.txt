@@ -1,5 +1,6 @@
 fastapi
 uvicorn
+<<<<<<< Updated upstream
 python-multipart      
 sqlalchemy            
 alembic               
@@ -17,3 +18,14 @@ cryptography
 #pydantic-settings     ← config.py 설정
 #pymysql               ← MySQL 연결
 #cryptography          ← pymysql 보안 인증
+=======
+python-multipart
+sqlalchemy
+alembic
+python-dotenv
+pydantic-settings
+pymysql
+cryptography
+transformers
+torch
+>>>>>>> Stashed changes
