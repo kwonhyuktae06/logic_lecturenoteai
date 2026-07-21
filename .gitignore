@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 개인 작업 기록 (팀 공유 X)
+docs/work.md
