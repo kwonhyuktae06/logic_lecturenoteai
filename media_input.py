@@ -6,18 +6,18 @@
 사전 조건: ffmpeg가 설치되어 PATH에 등록되어 있어야 함 (extract_audio 실행 시)
 """
 
-import subprocess
-from pathlib import Path
+import subprocess # 외부프로그램 ffmpeg를 실행하기 위한 라이브러리
+from pathlib import Path # 파일경로 단순화
 
-AUDIO_EXTENSIONS = {".mp3", ".wav", ".m4a"}
-VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv"}
+AUDIO_EXTENSIONS = {".mp3", ".wav", ".m4a"} # 오디오 파일 목록
+VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv"} # 영상 파일 목록
 
 
-def load_media(file_path: str) -> dict:
+def load_media(file_path: str) -> dict: # 사용자가 올린 파일을 분석해서 Whisper가 사용할 정보를 반환
     path = Path(file_path)
-    ext = path.suffix.lower()
+    ext = path.suffix.lower() #파일의 확장자
 
-    if ext in AUDIO_EXTENSIONS:
+    if ext in AUDIO_EXTENSIONS: 
         return {
             "media_type": "audio",
             "video_path": None,
@@ -25,7 +25,7 @@ def load_media(file_path: str) -> dict:
         }
 
     if ext in VIDEO_EXTENSIONS:
-        audio_path = extract_audio(path)
+        audio_path = extract_audio(path) 
         return {
             "media_type": "video",
             "video_path": str(path),
@@ -35,10 +35,10 @@ def load_media(file_path: str) -> dict:
     raise ValueError(f"지원하지 않는 파일 형식입니다: {ext}")
 
 
-def extract_audio(video_path: Path) -> str:
+def extract_audio(video_path: Path) -> str: # 영상에서 오디오만 추출
     audio_path = video_path.with_suffix(".wav")
 
-    command = [
+    command = [                 # ffmpeg에게 명령 전달
         "ffmpeg",
         "-y",                   # 기존 파일 있으면 덮어쓰기
         "-i", str(video_path),
@@ -49,7 +49,7 @@ def extract_audio(video_path: Path) -> str:
         str(audio_path),
     ]
 
-    subprocess.run(command, check=True, capture_output=True)
+    subprocess.run(command, check=True, capture_output=True) # ffmpeg 실
     return str(audio_path)
 
 
