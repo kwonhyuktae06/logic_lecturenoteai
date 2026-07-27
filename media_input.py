@@ -4,6 +4,8 @@
 - 영상이면 ffmpeg로 오디오만 추출해서 Whisper가 바로 쓸 수 있게 만듦
 
 사전 조건: ffmpeg가 설치되어 PATH에 등록되어 있어야 함 (extract_audio 실행 시)
+미디어 파일의 확장자를 구별해서 영상이면 ffmpeg 활용해서 오디오만 추출.
+영상의 경우에는 opencv에도 동일한 파일 경로를 전달해서 영상 프레임 분석도 가능하게 함.
 """
 
 import subprocess # 외부프로그램 ffmpeg를 실행하기 위한 라이브러리
@@ -15,6 +17,10 @@ VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv"} # 영상 파일 목록
 
 def load_media(file_path: str) -> dict: # 사용자가 올린 파일을 분석해서 Whisper가 사용할 정보를 반환
     path = Path(file_path)
+
+    if not path.exists(): # 파일이 없으면 ffmpeg까지 가지 않고 여기서 명확히 알림
+        raise FileNotFoundError(f"입력 파일을 찾을 수 없습니다: {path.resolve()}")
+
     ext = path.suffix.lower() #파일의 확장자
 
     if ext in AUDIO_EXTENSIONS: 
@@ -49,7 +55,9 @@ def extract_audio(video_path: Path) -> str: # 영상에서 오디오만 추출
         str(audio_path),
     ]
 
-    subprocess.run(command, check=True, capture_output=True) # ffmpeg 실
+    result = subprocess.run(command, capture_output=True, text=True) # ffmpeg 실행
+    if result.returncode != 0: # 실패하면 ffmpeg가 남긴 실제 에러 메시지를 그대로 보여줌
+        raise RuntimeError(f"ffmpeg 오디오 추출 실패:\n{result.stderr}")
     return str(audio_path)
 
 
