@@ -6,6 +6,13 @@ import uuid
 
 Base = declarative_base()
 
+#현재 업로드 상태를 나타내는 모델
+#현재 파일 업로드 → 로컬 uploads/ 폴더에 저장
+#DB팀이랑 연결되면 바꿀 것
+#로컬 uploads/ 저장 → DB팀 스토리지로 변경
+#SQLite → MySQL로 변경
+#db 수정시 .env 만 수정
+#services/upload.py <- 에서 파일 저장 부분만 수정 
 
 class Upload(Base):
     __tablename__ = "uploads"

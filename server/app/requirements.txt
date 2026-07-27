@@ -7,6 +7,8 @@ python-dotenv
 pydantic-settings
 pymysql
 cryptography
+transformers
+torch
 
 
 #← 파일 업로드

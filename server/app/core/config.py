@@ -27,8 +27,12 @@ class Settings(BaseSettings):
         return path
 
     # 파일 제한 # 500MB
-    MAX_FILE_SIZE: int = 500 * 1024 * 1024  
-    ALLOWED_EXTENSIONS: list = [".mp4", ".mp3", ".pdf", ".pptx", ".txt"]
+    MAX_FILE_SIZE: int = 500 * 1024 * 1024
+    ALLOWED_EXTENSIONS: list = [".mp4", ".mp3", ".wav", ".pdf", ".pptx", ".txt", ".jpg", ".jpeg", ".png"]
+
+    # AI 모델 설정
+    WHISPER_MODEL_NAME: str = "openai/whisper-base"
+    QWEN_MODEL_NAME: str = "Qwen/Qwen2.5-VL-3B-Instruct"
 
     class Config:
         env_file = ".env"
