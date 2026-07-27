@@ -1,9 +1,18 @@
 fastapi
 uvicorn
-python-multipart      ← 파일 업로드
-sqlalchemy            ← DB ORM
-alembic               ← DB 마이그레이션
-python-dotenv         ← .env 파일 읽기
-pydantic-settings     ← config.py 설정
-pymysql               ← MySQL 연결
-cryptography          ← pymysql 보안 인증
+python-multipart
+sqlalchemy
+alembic
+python-dotenv
+pydantic-settings
+pymysql
+cryptography
+
+
+#← 파일 업로드
+#← DB ORM
+#← DB 마이그레이션
+#← .env 파일 읽기
+#← config.py 설정
+#← MySQL 연결
+#← pymysql 보안 인증
