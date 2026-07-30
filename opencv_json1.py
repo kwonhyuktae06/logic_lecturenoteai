@@ -14,6 +14,8 @@ import json     # JSON 데이터 가공을 위한 라이브러리
 import base64   # 이미지를 텍스트 데이터(문자열)로 인코딩하기 위한 라이브러리
 import numpy as np # 행렬(Matrix) 연산을 위한 라이브러리 (OpenCV 이미지 데이터 핸들링 필수)
 import os       # [추가] 폴더 유무 확인 및 자동 생성을 위한 라이브러리
+import tkinter as tk  
+from tkinter import messagebox
 
 def image_to_base64(frame_bgr):
     """
@@ -41,9 +43,20 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
     output_dir = "captures"
     os.makedirs(output_dir, exist_ok=True)  # [추가] 폴더가 없으면 자동 생성하여 저장 에러 방지
 
+    # 파일 존재 여부 확인
+    if not os.path.exists(video_path):
+        root = tk.Tk()
+        root.withdraw()  # 불필요한 메인 윈도우 창 숨기기
+        messagebox.showerror("파일 오류", f"지정한 동영상 파일을 찾을 수 없습니다.\n경로를 확인해 주세요:\n{video_path}")
+        root.destroy()
+        return "[]"
+
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
-        print(" 비디오 파일을 열 수 없습니다.")
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showwarning("열기 실패", f"동영상 파일을 열 수 없습니다.\n파일이 손상되었거나 지원하지 않는 형식입니다:\n{video_path}")
+        root.destroy()
         return "[]"
 
     orig_fps = cap.get(cv2.CAP_PROP_FPS)
@@ -73,8 +86,9 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
     prev_frame_resized = cv2.resize(prev_frame, analysis_size, interpolation=cv2.INTER_AREA)
 
     # ------------------------------------------------------------------
-    # [추가] 0초 첫 화면 실물 이미지 파일 저장 및 JSON 데이터 등록
-    cv2.imwrite(f"{output_dir}/00_00_00_First_Frame.jpg", prev_frame_resized)
+   # [수정] 원본 이미지 1장만 captures 폴더에 저장 후 경로만 기록
+    first_img_path = f"{output_dir}/00_00_00_First_Frame.jpg"
+    cv2.imwrite(first_img_path, prev_frame_resized)
     print("[전처리 레이어] 첫 화면 실물 이미지 파일로 캡처 성공")
     # ------------------------------------------------------------------
 
@@ -82,7 +96,7 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
         "timestamp_sec": 0.0, 
         "timestamp_hms": "00:00:00",
         "capture_reason": "First_Frame",
-        "image_data": image_to_base64(prev_frame_resized)
+        "image_data": first_img_path  # [수정] 실물 파일 경로만 기록 (Base64 인코딩 제거)
     }
     video_timeline_results.append(first_capture)
 
@@ -138,24 +152,16 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
                 processed_whisper_timestamps.add(t)  # [추가] 처리 완료 집합에 기록하여 중복 방지
                 break
         
-        # 화면 전환이 감지되었거나 Whisper 타겟 시간일 경우 캡처 실행
+       # 화면 전환이 감지되었거나 Whisper 타겟 시간일 경우 캡처 실행
         if is_scene_changed or is_whisper_target:
             reason = "WHISPER_TARGET" if is_whisper_target else "PPT_SCENE_CHANGE"
             
-            # ------------------------------------------------------------------
-            # [추가] 실물 이미지 파일로 captures 폴더에 저장
-            safe_hms = hms_string.replace(":", "_")
-            file_name = f"{output_dir}/{safe_hms}_{reason}.jpg"
-            cv2.imwrite(file_name, calc_frame)  # 실제 JPG 파일 저장
-            print(f" [전처리 레이어] 실물 파일 캡처 성공: {file_name}")
-            # ------------------------------------------------------------------
-            
-            # JSON 반환 객체 패키징
+            # [수정] 실물 파일 중복 저장(cv2.imwrite)은 제거하고, 원본 경로(first_img_path)만 참조
             capture_item = {
                 "timestamp_sec": round(current_sec, 2),
                 "timestamp_hms": hms_string,
                 "capture_reason": reason,
-                "image_data": image_to_base64(calc_frame)
+                "image_path": first_img_path # <-- 원본 이미지 경로만 전달
             }
             video_timeline_results.append(capture_item)
             
@@ -197,4 +203,7 @@ if __name__ == "__main__":
     fake_whisper_times = [5.0] 
     
     json_result = generate_opencv_json_pipeline(video_file, fake_whisper_times)
-    print("\n 전처리 분석 완료!")
+if json_result != "[]":
+        print("\n전처리 분석 완료!")
+else:
+        print("\n파일이 없습니다 지정 파일을 확인하세요.")
