@@ -18,6 +18,7 @@
 3. 기존 코드랑 새로 만든 코드가 너무 다릅니다. 수정할 부분이 많았던 것을 감안해도 아예 코드의 설계 방식 자체가 달라져서
 기존 코드에서 수정했던 내용을 다시 여기다가 또 적용해야되는 번거로움이 있습니다. 
 다음부터는 기존파일 내용을 수정하고 기존파일의 수정본을 보내주세요.
+4. URL을 입력받았을 때 영상을 어떻게 처리할지에 대한 해결책이 없습니다.
 """
 
 import argparse
@@ -29,7 +30,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 import torch
 from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
-
+from transformers import BitsAndBytesConfig # 4bit 양자화를 위한 객체 추가
 
 MODEL_NAME = "Qwen/Qwen3-VL-8B-Instruct" #ai 모델명 지정
 
@@ -130,7 +131,14 @@ class QwenLectureAnalyzer:
         self.model_name = model_name
 
         print(f"[Qwen] 모델을 불러오는 중입니다: {model_name}")
-
+        quant_config = BitsAndBytesConfig( 
+                    load_in_4bit=True,                      # 4비트로 양자화
+                    bnb_4bit_compute_dtype=torch.float16,   # 계산은 16비트로 수행
+                    bnb_4bit_quant_type="nf4",              # 양자화 방식 (일반적으로 nf4 권장)
+                    bnb_4bit_use_double_quant=True,         # 이중 양자화로 메모리 추가 절약
+                    llm_int8_enable_fp32_cpu_offload=True   # CPU 오프로딩 활성화 (GPU 메모리 부족 시에만 CPU로 연산)
+                )
+        
         self.model = Qwen3VLForConditionalGeneration.from_pretrained(
             model_name,
             torch_dtype="auto",
