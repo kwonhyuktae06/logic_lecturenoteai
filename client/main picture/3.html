@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+.logo {
+    display : flex;
+    align-items: center;
+    margin-bottom : 20px;
+}
+    
+.logo h2{
+    opacity: 0; /* 투명도 0 */
+    white-space: nowrap; /* 줄바꿈이 되지 않도록 */
+    transition: opacity 0.2s ease;
+    background-color: transparent;
+}
+
+/* 사이드바 로고 크기 및 위치 */
+.logo img{
+    width: 40px;
+    height: 40px; 
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin: 0 8px 0 8px;
+}
+
+/* 사이드바 로고 크기 및 위치 */
+.menu_item1 img{
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    margin: 0 8px 0 12px;
+}
+
+/* 사이드바 로고 크기 및 위치 */
+.menu_item2 img{
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    margin: 0 8px 0 12px;
+}
+
+/* 사이드바 로고 크기 및 위치 */
+.menu_item3 img{
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    margin: 0 8px 0 12px;
+}
+
+/* 사이드바 로고 크기 및 위치 */
+.menu_item4 img{
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    margin: 0 8px 0 12px;
+}
+
+/* 사이드바 로고 크기 및 위치 */
+.menu_item5 img{
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    margin: 0 8px 0 12px;
+}
+
+.sidebar:hover .logo h2{
+    opacity: 1;
+}
+
+.sidebar {
+    width : 60px;
+    height : 100%;
+
+    transition : widht 0.3s ease;
+
+    border-right : 2px solid #eeeeee;
+
+    /* 화면 상단에 고정 */
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    /* 다른 요소보다 위에 표시 */
+    z-index: 1000;
+
+}
+
+.sidebar:hover{
+    width : 200px;
+}
+
+
+.sidebar_menu{
+    display : flex;
+    flex-direction : column;
+    gap :10px;
+
+}
+
+.menu_item {
+    
+    display :flex;
+    align-items : center;
+    padding : 0 2px;
+    overflow: hidden;
+    background-color: transparent;
+    border: none;
+    
+}
+
+.menu_item1,
+.menu_item2,
+.menu_item3,
+.menu_item4,
+.menu_item5 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.menu_item button{
+    width : auto;
+    opacity: 0; /* 투명도 0 */
+    white-space: nowrap; /* 줄바꿈이 되지 않도록 */
+    transition: opacity 0.2s ease;
+    border :none;
+    padding: 10px 10px;
+    background-color: transparent;
+     text-align: left;
+}
+
+.menu_item :hover {
+    width : 100%;
+    background-color: #e1e4ec;
+    color: black;
+    border-radius: 8px;
+}
+
+/* 사이드바가 열렸을 때 글자 표시 */
+.sidebar:hover .menu_item button{
+    opacity: 1;
+}
+.content {
+    margin-left : 70px;
+}
+.sidebar:hover ~ .content {
+    margin-left: 200px;
+}
+
+
+
+</style>
+</head>
+<body>
+    <div class="sidebar">
+ 
+    <!--로고-->
+        <div class ="logo">
+            <img src ="circle.png">
+            <h2>강의 정리 AI</h2>
+        </div>
+
+        <!--사이드바 메뉴-->
+        <div class="sidebar_menu">
+
+        <div class="menu_item">
+            <div class ="menu_item1">
+            <img src="home.png">
+             <button button onclick ="location.href ='../upload start.html/1.html'" class ="start_button">홈</button>
+            </div>  
+        </div>   
+
+        <div class="menu_item">
+            <div class ="menu_item2">
+            <img src="timeline.png">
+            <button>타임라인</button>
+            </div>
+        </div>
+
+        <div class="menu_item">
+            <div class ="menu_item3">
+            <img src="summary.png">
+            <button>핵심 요약</button>
+            </div>
+        </div>
+
+        <div class="menu_item">
+            <div class ="menu_item4">
+            <img src="quiz.png">
+            <button>퀴즈</button>
+            </div>
+        </div> 
+
+        <div class="menu_item">
+            <div class ="menu_item5">
+            <img src="wrong.png">
+            <button>오답노트</button>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+<div class="content">
+    <h1>메인 화면</h1>
+    <p>여기에 페이지 내용이 들어갑니다.</p>
+</div>
+
+</body>
+</html>
