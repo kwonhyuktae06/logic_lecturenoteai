@@ -8,7 +8,7 @@
 .logo {
     display : flex;
     align-items: center;
-    margin-bottom : 20px;
+    margin-bottom : 15px;
 }
     
 .logo h2{
@@ -20,63 +20,24 @@
 
 /* 사이드바 로고 크기 및 위치 */
 .logo img{
-    width: 40px;
-    height: 40px; 
+    width: 45px;
+    height: 45px; 
     display: flex;
     justify-content: center;
     align-items: center; 
-    margin: 0 8px 0 8px;
+    margin: 0 15px 0 15px;
 }
 
-/* 사이드바 로고 크기 및 위치 */
-.menu_item1 img{
-    width: 25px;
-    height: 25px;
-    object-fit: contain;
-    margin: 0 8px 0 12px;
-}
-
-/* 사이드바 로고 크기 및 위치 */
-.menu_item2 img{
-    width: 25px;
-    height: 25px;
-    object-fit: contain;
-    margin: 0 8px 0 12px;
-}
-
-/* 사이드바 로고 크기 및 위치 */
-.menu_item3 img{
-    width: 25px;
-    height: 25px;
-    object-fit: contain;
-    margin: 0 8px 0 12px;
-}
-
-/* 사이드바 로고 크기 및 위치 */
-.menu_item4 img{
-    width: 25px;
-    height: 25px;
-    object-fit: contain;
-    margin: 0 8px 0 12px;
-}
-
-/* 사이드바 로고 크기 및 위치 */
-.menu_item5 img{
-    width: 25px;
-    height: 25px;
-    object-fit: contain;
-    margin: 0 8px 0 12px;
-}
 
 .sidebar:hover .logo h2{
     opacity: 1;
 }
 
 .sidebar {
-    width : 60px;
+    width : 70px;
     height : 100%;
 
-    transition : widht 0.3s ease;
+    transition : width 0.3s ease;
 
     border-right : 2px solid #eeeeee;
 
@@ -87,6 +48,7 @@
 
     /* 다른 요소보다 위에 표시 */
     z-index: 1000;
+    
 
 }
 
@@ -106,45 +68,55 @@
     
     display :flex;
     align-items : center;
-    padding : 0 2px;
-    overflow: hidden;
+   flex-direction: row; 
+
+    padding : 0 2px; 
+    overflow: hidden; 
     background-color: transparent;
     border: none;
+
     
+    height: 50px;
+    box-sizing: border-box;
+    object-fit: contain;
+    margin: 0 8px 0 12px;
 }
 
-.menu_item1,
-.menu_item2,
-.menu_item3,
-.menu_item4,
-.menu_item5 {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
+.menu_item img{
+    width: 30px;
+    height: 30px; 
+    object-fit: contain;
+    display:block;
+    margin: 0 8px 0 8px;
+   flex-shrink: 0;
+
 }
 
-.menu_item button{
-    width : auto;
+
+
+.menu_btn{
     opacity: 0; /* 투명도 0 */
+    overflow:hidden;
     white-space: nowrap; /* 줄바꿈이 되지 않도록 */
-    transition: opacity 0.2s ease;
+    
+
     border :none;
-    padding: 10px 10px;
+    padding: 10px;
     background-color: transparent;
-     text-align: left;
+    text-align: left;
+    transition: opacity 0.3s ease;
 }
 
-.menu_item :hover {
-    width : 100%;
+
+.menu_item:hover{
     background-color: #e1e4ec;
-    color: black;
     border-radius: 8px;
 }
 
+
 /* 사이드바가 열렸을 때 글자 표시 */
-.sidebar:hover .menu_item button{
-    opacity: 1;
+.sidebar:hover .menu_btn{
+    opacity:1;
 }
 .content {
     margin-left : 70px;
@@ -158,7 +130,7 @@
 </style>
 </head>
 <body>
-    <div class="sidebar">
+<div class="sidebar">
  
     <!--로고-->
         <div class ="logo">
@@ -166,51 +138,54 @@
             <h2>강의 정리 AI</h2>
         </div>
 
-        <!--사이드바 메뉴-->
-        <div class="sidebar_menu">
+<!--사이드바 메뉴-->
+<div class="sidebar_menu">
 
-        <div class="menu_item">
-            <div class ="menu_item1">
-            <img src="home.png">
-             <button button onclick ="location.href ='../upload start.html/1.html'" class ="start_button">홈</button>
-            </div>  
-        </div>   
 
-        <div class="menu_item">
-            <div class ="menu_item2">
-            <img src="timeline.png">
-            <button>타임라인</button>
-            </div>
-        </div>
+<div class="menu_item" 
+     onclick="location.href='../upload start.html/1.html'">
+     <img src="home.png">
+    <button class="menu_btn">
+        <span>홈</span>
+    </button>
+</div>
 
-        <div class="menu_item">
-            <div class ="menu_item3">
-            <img src="summary.png">
-            <button>핵심 요약</button>
-            </div>
-        </div>
+<div class="menu_item">
+    <img src="timeline.png">
+    <button class="menu_btn">
+        <span>타임라인</span>
+    </button>
+</div>
 
-        <div class="menu_item">
-            <div class ="menu_item4">
-            <img src="quiz.png">
-            <button>퀴즈</button>
-            </div>
-        </div> 
+<div class="menu_item">
+     <img src="summary.png">
+    <button class="menu_btn">
+        <span>핵심 요약</span>
+    </button>
+</div>
 
-        <div class="menu_item">
-            <div class ="menu_item5">
-            <img src="wrong.png">
-            <button>오답노트</button>
-            </div>
-        </div>
+<div class="menu_item">
+    <img src="quiz.png">
+    <button class="menu_btn">
+        <span>퀴즈</span>
+    </button>
+</div>
 
-        </div>
-    </div>
+<div class="menu_item">
+     <img src="wrong.png">
+    <button class="menu_btn">
+        <span>오답노트</span>
+    </button>
+</div>
+</div>
+</div>
+  
 
 <div class="content">
     <h1>메인 화면</h1>
     <p>여기에 페이지 내용이 들어갑니다.</p>
 </div>
+
 
 </body>
 </html>
