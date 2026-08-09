@@ -24,3 +24,5 @@
 
 ## server/requirements.txt
 ## 필요한 패키지 목록
+
+## mysql -u root -p lecture_pipeline_db
