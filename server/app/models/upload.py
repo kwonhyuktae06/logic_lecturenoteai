@@ -6,39 +6,19 @@ import uuid
 
 Base = declarative_base()
 
-#현재 업로드 상태를 나타내는 모델
-#현재 파일 업로드 → 로컬 uploads/ 폴더에 저장
-#DB팀이랑 연결되면 바꿀 것
-#로컬 uploads/ 저장 → DB팀 스토리지로 변경
-#SQLite → MySQL로 변경
-#db 수정시 .env 만 수정
-#services/upload.py <- 에서 파일 저장 부분만 수정 
 
 class Upload(Base):
     __tablename__ = "uploads"
 
-    # 고유 ID (UUID)
     id = Column(CHAR(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-
-    # 업로드 타입 ("file" or "url")
     type = Column(String(10), nullable=False)
-
-    # 파일명 or URL
     source = Column(Text, nullable=False)
-
-    # 파일 업로드일 때만 값이 있음, URL 업로드는 None
     file_path = Column(Text, nullable=True)
-
-    # 파일 크기 (bytes)
     file_size = Column(BigInteger, nullable=True)
-
-    # 처리 상태: pending(대기) → processing(처리중) → done(완료) | failed(실패)
     status = Column(String(20), nullable=False, default="pending")
-
-    # 실패 시 에러 메시지
     error_message = Column(Text, nullable=True)
-
-    # 시간
+    transcript = Column(Text, nullable=True)
+    analysis = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
