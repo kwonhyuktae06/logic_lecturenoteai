@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, UploadFile, File, Depends, Form, HTTPException
+from fastapi import APIRouter, UploadFile, File, Depends, Form, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -8,15 +8,19 @@ from app.schemas.upload import (
     UploadUrlRequest,
     UploadUrlResponse,
     UploadStatusResponse,
-    PipelineResponse,
+    PipelineAcceptedResponse,
 )
-from app.services.upload import upload_file, upload_url, get_upload_status, process_audio_image_pipeline
+from app.services.upload import (
+    upload_file,
+    upload_url,
+    get_upload_status,
+    process_audio_image_pipeline,
+    run_pipeline_background,
+)
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
 
-# 프론트에서 multipart/form-data 형식으로 파일 전송
-# 응답: upload_id, file_name, file_size, status
 @router.post("/file", response_model=UploadFileResponse)
 async def upload_file_endpoint(
     file: UploadFile = File(...),
@@ -31,7 +35,6 @@ async def upload_file_endpoint(
     )
 
 
-# URL 업로드
 @router.post("/url", response_model=UploadUrlResponse)
 async def upload_url_endpoint(
     request: UploadUrlRequest,
@@ -45,18 +48,27 @@ async def upload_url_endpoint(
     )
 
 
-# 업로드 상태 조회
 @router.get("/{upload_id}", response_model=UploadStatusResponse)
 def get_status_endpoint(
     upload_id: str,
     db: Session = Depends(get_db)
 ):
-    return get_upload_status(upload_id, db)
+    upload = get_upload_status(upload_id, db)
+    return UploadStatusResponse(
+        upload_id=upload.id,
+        type=upload.type,
+        status=upload.status,
+        error_message=upload.error_message,
+        transcript=upload.transcript,
+        analysis=upload.analysis,
+        created_at=upload.created_at,
+        updated_at=upload.updated_at,
+    )
 
 
-# 음성 + 이미지 파이프라인 처리
-@router.post("/pipeline", response_model=PipelineResponse)
+@router.post("/pipeline", response_model=PipelineAcceptedResponse)
 async def pipeline_endpoint(
+    background_tasks: BackgroundTasks,
     audio: UploadFile = File(...),
     images: List[UploadFile] = File(...),
     image_count: int = Form(default=1),
@@ -68,5 +80,12 @@ async def pipeline_endpoint(
     if len(images) != image_count:
         raise HTTPException(status_code=400, detail="전송한 이미지 수와 image_count가 일치하지 않아요.")
 
-    result = await process_audio_image_pipeline(audio, images, db)
-    return PipelineResponse(**result)
+    upload, audio_path, saved_images = await process_audio_image_pipeline(audio, images, db)
+    background_tasks.add_task(run_pipeline_background, upload.id, audio_path, saved_images)
+
+    return PipelineAcceptedResponse(
+        upload_id=upload.id,
+        status=upload.status,
+        image_count=len(saved_images),
+        audio_file_name=audio.filename,
+    )
