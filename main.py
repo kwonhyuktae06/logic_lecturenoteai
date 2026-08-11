@@ -17,3 +17,4 @@ def run_pipeline(file_path: str):
 
 if __name__ == "__main__": # 이 파일을 직접 실행했을 때만 아래 코드 실행
     run_pipeline("lecture_test4.mp4") # 테스트용으로 lecture_teat4.mp4를 입력하여 파이프라인이 정상적으로 동작하는지 확인
+
