@@ -118,12 +118,62 @@
 .sidebar:hover .menu_btn{
     opacity:1;
 }
-.content {
-    margin-left : 70px;
+
+.main {
+    margin-left: 70px;
+    transition: margin-left 0.3s ease;
 }
-.sidebar:hover ~ .content {
+
+.sidebar:hover ~ .main {
     margin-left: 200px;
 }
+
+.timeline_page {
+    display: none;
+    width: 100%;
+    max-width: 850px;
+    aspect-ratio: 16 / 9;
+    margin-left : 15px;
+    padding: 2px; /* 안쪽 여백 */
+
+    border: 2px solid #724e24;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); /* 그림자 효과 */
+
+    border-radius: 24px; /*모서리를 둥글게*/
+}
+
+.content {
+    display: block;
+}
+.timeline{
+    margin-left: 900px;
+}
+.timeline_item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    
+}
+
+.timeline_time {
+    width: 70px;
+    flex-shrink: 0; /* 해당 요소의 크기가 줄어들지 않게 하는 속성 */
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.timeline_content {
+    margin-left: 10px;
+    font-size : 15px;
+    white-space: nowrap;
+}
+
+.timeline_content h2 {
+    margin: 0;
+}
+
+
+
 
 
 
@@ -138,53 +188,138 @@
             <h2>강의 정리 AI</h2>
         </div>
 
-<!--사이드바 메뉴-->
-<div class="sidebar_menu">
+ <!--사이드바 메뉴-->
+ <div class="sidebar_menu">
 
-
-<div class="menu_item" 
+ <!--홈 버튼-->
+ <div class="menu_item" 
      onclick="location.href='../upload start.html/1.html'">
      <img src="home.png">
     <button class="menu_btn">
         <span>홈</span>
     </button>
-</div>
+ </div>
 
-<div class="menu_item">
+ <!--타임라인 버튼-->
+ <div class="menu_item" id="timeline_button">
     <img src="timeline.png">
     <button class="menu_btn">
         <span>타임라인</span>
     </button>
-</div>
+ </div>
 
-<div class="menu_item">
+ <!--핵심요약 버튼-->
+ <div class="menu_item">
      <img src="summary.png">
     <button class="menu_btn">
         <span>핵심 요약</span>
     </button>
-</div>
+ </div>
 
-<div class="menu_item">
+ <!--퀴즈 버튼-->
+ <div class="menu_item">
     <img src="quiz.png">
     <button class="menu_btn">
         <span>퀴즈</span>
     </button>
-</div>
+ </div>
 
-<div class="menu_item">
+ <!--오답노트 버튼-->
+ <div class="menu_item">
      <img src="wrong.png">
     <button class="menu_btn">
         <span>오답노트</span>
     </button>
+ </div>
 </div>
 </div>
-</div>
-  
 
-<div class="content">
+<div class="main">
+  
+ <div class="content">
     <h1>메인 화면</h1>
     <p>여기에 페이지 내용이 들어갑니다.</p>
+ </div>
+
+ <!--타임라인 화면-->
+ <div class="timeline_page">
+ <div class ="timeline"></div>
+ </div>
+
+
 </div>
+
+<script>
+    /* 임시 데이터 */
+    const timelineData = [
+    {
+        time: 0,
+        title: "강의 소개",
+       
+    },
+    {
+        time: 162,
+        title: "명사",
+    },
+    {
+        time: 285,
+        title: "가산명사",
+    },
+       
+    {
+        time: 370,
+        title: "불가산 명사",
+       
+    }
+];
+/* 전달받은 초단위 시간을 분:초 형태로 변환 */
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const seconds_left = seconds % 60;
+
+    return `${String(minutes).padStart(2, "0")}:${String(seconds_left).padStart(2, "0")}`;
+}
+
+/* 타임라인이 들어갈 html 요소 */
+const timeline = document.querySelector(".timeline");
+
+/* 임시데이터를 하나씩 꺼내서 화면에 출력  */
+timelineData.forEach(item =>{
+    const timeline_items = document.createElement("div");
+    timeline_items.classList.add("timeline_item"); /*<div class ="timeline_item"></div> */
+    
+    /* 임시데이터의 시간과 타이틀을 화면에 보여줌 */
+    timeline_items.innerHTML = `
+        <div class="timeline_time">
+            ${formatTime(item.time)}
+        </div>
+
+        <div class="timeline_content">
+            <h4>${item.title}</h4>
+        </div>
+    `;
+    /* 부모노드<div>에 timeline_items를 추가함 */
+    timeline.appendChild(timeline_items);
+
+});
+
+/* 타임라인을 클릭했을 때 타임라인 화면이 보이게 */
+
+const timeline_button = document.querySelector("#timeline_button");
+const timeline_page = document.querySelector(".timeline_page");
+const content = document.querySelector(".content");
+
+timeline_button.addEventListener("click", () => {
+
+    content.style.display = "none";
+    timeline_page.style.display = "block";
+
+});
+
+
+</script>
+</body>
+</html>
 
 
 </body>
