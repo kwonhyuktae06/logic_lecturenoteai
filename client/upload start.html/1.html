@@ -26,7 +26,7 @@
 
     padding: 2px; /* 안쪽 여백 */
 
-    background: linear-gradient( #724e24); /* 배경 라인색을 그라데이션으로 */
+    border: 2px solid #724e24;/* 배경 라인색을 그라데이션으로 */
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); /* 그림자 효과 */
 
     border-radius: 24px; /*모서리를 둥글게*/
@@ -141,6 +141,12 @@
     cursor: pointer;
 }
 
+#file_name {
+    margin-bottom: 0;
+    font-size: 14px;
+    text-align: center;
+}
+
 
 </style>
 
@@ -160,19 +166,20 @@
         <img src ="upload.png" width = "90" height ="80">
         <h3>파일을 드래그하거나 클릭하여 업로드</h3>
         <p>mp4, mp3, pdf, pptx, txt 파일을 지원합니다</p>
-         <input type="file" id="file_input" hidden accept=".mp3,.mp4,.pptx,.txt,.pdf">
-         <div class="button_outer">
-         <button type="button" class="button_file" id="select_button">
-         파일 선택
-         </button>
-         </div>
+       <input type="file" id="file_input" hidden accept=".mp3,.mp4,.pptx,.txt,.pdf">
+
+      <div class="button_outer">
+        <button type="button" class="button_file" id="select_button">
+        파일 선택
+        </button>
+      </div>
+      <p id="file_name">선택된 파일 없음</p>
     </div>
 </div>  
-    
 
-<!--업로드가 가능한 파일 제한하기 -->
-<input type="file" id="file_input" accept=".mp3, .mp4, .pptx, .txt .pdf">
-    
+
+
+
 <!--중앙 "또는" 라인-->
 <div class="line">
     <hr>
@@ -187,7 +194,7 @@
      <h3>링크로 업로드</h3>
      <p>Youtube, Video 등의 강의 영상 링크를 입력하세요.</p>
      <input type ="text" id = "url_input" placeholder ="ex: https://youtube.com/watch?v=....">
-    </div>
+  </div>
 </div>
 
 
@@ -197,6 +204,8 @@
     업로드 시작
 </button>   
 </div>
+
+
   
 <script>
     /* 변수 설정 */
@@ -204,6 +213,7 @@
     const url_input=document.getElementById("url_input"); /* 링크 입력 */
     const upload_start_button =document.getElementById("upload_start_button"); /* 업로드 버튼 */
     let selected_file = null; /* 선택된 파일 저장 */
+    const file_name = document.getElementById("file_name");
 
 
 /* 파일선택 */
@@ -212,7 +222,7 @@
 
     if (selected_file) {
         console.log("선택한 파일:", selected_file.name); /* 파일을 잘 선택했는지 확인 */
-
+        file_name.textContent = selected_file.name; /* 선택한 파일 이름명 보여줌. */
         upload_start_button.disabled = false /* 업로드 버튼 활성화 */
     }
 });
@@ -234,9 +244,9 @@ upload_start_button.addEventListener("click", async function (event) {
 /* 파일 선택 */
     if (selected_file) { /* 파일이 있으면 */
 
-        const formData = new FormData(); /* multipart/form-data으로 보내야하므로  */
+        const form_data = new FormData(); /* multipart/form-data으로 보내야하므로  */
 
-        formData.append("file", selected_file); /* 데이터 추가 */
+        form_data.append("file", selected_file); /* 데이터 추가 */
 
         try {
 
@@ -244,7 +254,7 @@ upload_start_button.addEventListener("click", async function (event) {
                 "http://localhost:8000/api/v1/upload/file",
                 {
                     method: "POST",/* 보내기 */
-                    body: formData /* 보낼 데이터 */
+                    body: FormData /* 보낼 데이터 */
                 }
             );
 
