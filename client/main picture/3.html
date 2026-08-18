@@ -128,19 +128,6 @@
     margin-left: 200px;
 }
 
-.timeline_page {
-    display: none;
-    width: 100%;
-    max-width: 850px;
-    aspect-ratio: 16 / 9;
-    margin-left : 15px;
-    padding: 2px; /* 안쪽 여백 */
-
-    border: 2px solid #724e24;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); /* 그림자 효과 */
-
-    border-radius: 24px; /*모서리를 둥글게*/
-}
 
 .content {
     display: block;
@@ -171,6 +158,24 @@
 .timeline_content h2 {
     margin: 0;
 }
+
+.timeline_page {
+    display: none;
+}
+
+.timeline_layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+#video {
+    width: 1100px;
+     aspect-ratio: 16 / 9;
+    height: auto;
+}
+
 
 
 
@@ -242,15 +247,21 @@
  </div>
 
  <!--타임라인 화면-->
- <div class="timeline_page">
- <div class ="timeline"></div>
- <div class ="video_container">
-    <video id ="video" controls>
-        <source id ="video_mp4" src ="" type="video/mp4">
-    </video>
- </div>
- </div>
+<div class="timeline_page">
 
+    <div class="timeline_layout">
+
+        <div class="video_container">
+            <video id="video" controls>
+                <source id="video_mp4" src="" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="timeline"></div>
+
+    </div>
+
+</div>
 
 </div>
 
