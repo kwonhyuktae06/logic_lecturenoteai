@@ -1,342 +1,679 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-<style>
-.logo {
-    display : flex;
-    align-items: center;
-    margin-bottom : 15px;
-}
-    
-.logo h2{
-    opacity: 0; /* 투명도 0 */
-    white-space: nowrap; /* 줄바꿈이 되지 않도록 */
-    transition: opacity 0.2s ease;
-    background-color: transparent;
-}
 
-/* 사이드바 로고 크기 및 위치 */
-.logo img{
-    width: 45px;
-    height: 45px; 
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    margin: 0 15px 0 15px;
-}
+    <title>강의 정리 AI</title>
 
+    <style>
 
-.sidebar:hover .logo h2{
-    opacity: 1;
-}
+        /* =========================
+           사이드바
+        ========================= */
 
-.sidebar {
-    width : 70px;
-    height : 100%;
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
 
-    transition : width 0.3s ease;
+        .logo h2 {
+            opacity: 0;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+            background-color: transparent;
+        }
 
-    border-right : 2px solid #eeeeee;
+        .logo img {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 15px;
+        }
 
-    /* 화면 상단에 고정 */
-    position: fixed;
-    top: 0;
-    left: 0;
+        .sidebar:hover .logo h2 {
+            opacity: 1;
+        }
 
-    /* 다른 요소보다 위에 표시 */
-    z-index: 1000;
-    
+        .sidebar {
+            width: 70px;
+            height: 100%;
 
-}
+            transition: width 0.3s ease;
 
-.sidebar:hover{
-    width : 200px;
-}
+            border-right: 2px solid #eeeeee;
 
+            position: fixed;
+            top: 0;
+            left: 0;
 
-.sidebar_menu{
-    display : flex;
-    flex-direction : column;
-    gap :10px;
+            z-index: 1000;
+        }
 
-}
+        .sidebar:hover {
+            width: 200px;
+        }
 
-.menu_item {
-    
-    display :flex;
-    align-items : center;
-   flex-direction: row; 
+        .sidebar_menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    padding : 0 2px; 
-    overflow: hidden; 
-    background-color: transparent;
-    border: none;
+        .menu_item {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
 
-    
-    height: 50px;
-    box-sizing: border-box;
-    object-fit: contain;
-    margin: 0 8px 0 12px;
-}
+            padding: 0 2px;
+            overflow: hidden;
 
-.menu_item img{
-    width: 30px;
-    height: 30px; 
-    object-fit: contain;
-    display:block;
-    margin: 0 8px 0 8px;
-   flex-shrink: 0;
+            background-color: transparent;
+            border: none;
 
-}
+            height: 50px;
+            box-sizing: border-box;
 
+            margin: 0 8px 0 12px;
 
+            cursor: pointer;
+        }
 
-.menu_btn{
-    opacity: 0; /* 투명도 0 */
-    overflow:hidden;
-    white-space: nowrap; /* 줄바꿈이 되지 않도록 */
-    
+        .menu_item img {
+            width: 30px;
+            height: 30px;
 
-    border :none;
-    padding: 10px;
-    background-color: transparent;
-    text-align: left;
-    transition: opacity 0.3s ease;
-}
+            object-fit: contain;
+            display: block;
 
+            margin: 0 8px;
 
-.menu_item:hover{
-    background-color: #e1e4ec;
-    border-radius: 8px;
-}
+            flex-shrink: 0;
+        }
 
+        .menu_btn {
+            opacity: 0;
+            overflow: hidden;
+            white-space: nowrap;
 
-/* 사이드바가 열렸을 때 글자 표시 */
-.sidebar:hover .menu_btn{
-    opacity:1;
-}
+            border: none;
+            padding: 10px;
 
-.main {
-    margin-left: 70px;
-    transition: margin-left 0.3s ease;
-}
+            background-color: transparent;
+            text-align: left;
 
-.sidebar:hover ~ .main {
-    margin-left: 200px;
-}
+            transition: opacity 0.3s ease;
 
+            cursor: pointer;
+        }
 
-.content {
-    display: block;
-}
-.timeline{
-    margin-left: 900px;
-}
-.timeline_item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    
-}
+        .menu_item:hover {
+            background-color: #e1e4ec;
+            border-radius: 8px;
+        }
 
-.timeline_time {
-    width: 70px;
-    flex-shrink: 0; /* 해당 요소의 크기가 줄어들지 않게 하는 속성 */
-    font-size: 15px;
-    white-space: nowrap;
-}
+        .sidebar:hover .menu_btn {
+            opacity: 1;
+        }
 
-.timeline_content {
-    margin-left: 10px;
-    font-size : 15px;
-    white-space: nowrap;
-}
+        .main {
+            margin-left: 70px;
+            transition: margin-left 0.3s ease;
+        }
 
-.timeline_content h2 {
-    margin: 0;
-}
-
-.timeline_page {
-    display: none;
-}
-
-.timeline_layout {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 40px;
-}
-
-#video {
-    width: 1100px;
-     aspect-ratio: 16 / 9;
-    height: auto;
-}
+        .sidebar:hover ~ .main {
+            margin-left: 200px;
+        }
 
 
+        /* =========================
+           기본 화면
+        ========================= */
+
+        .content {
+            display: block;
+            padding: 30px;
+        }
 
 
+        /* =========================
+           타임라인 화면
+        ========================= */
+
+        .timeline_page {
+            display: none;
+            padding: 30px;
+        }
+
+        .timeline_layout {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 40px;
+        }
 
 
+        /* 영상 */
 
-</style>
+        .video_container {
+            width: 70%;
+        }
+
+        #video {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            background-color: black;
+        }
+
+
+        /* 타임라인 */
+
+        .timeline {
+            width: 300px;
+        }
+
+        .timeline_item {
+            display: flex;
+            align-items: center;
+
+            margin-bottom: 5px;
+            padding: 8px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            transition: background-color 0.15s ease;
+        }
+
+        .timeline_item:hover {
+            background-color: #e1e4ec;
+        }
+
+        .timeline_item.active {
+            background-color: #e1e4ec;
+            font-weight: bold;
+        }
+
+        .timeline_time {
+            width: 70px;
+            flex-shrink: 0;
+
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        .timeline_content {
+            margin-left: 10px;
+            font-size: 15px;
+
+            white-space: nowrap;
+        }
+
+        .timeline_content h4 {
+            margin: 0;
+        }
+
+    </style>
 </head>
+
+
 <body>
-<div class="sidebar">
- 
-    <!--로고-->
-        <div class ="logo">
-            <img src ="circle.png">
+
+    <!-- =========================
+         사이드바
+    ========================= -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            <img src="circle.png">
             <h2>강의 정리 AI</h2>
         </div>
 
- <!--사이드바 메뉴-->
- <div class="sidebar_menu">
 
- <!--홈 버튼-->
- <div class="menu_item" 
-     onclick="location.href='../upload start.html/1.html'">
-     <img src="home.png">
-    <button class="menu_btn">
-        <span>홈</span>
-    </button>
- </div>
+        <div class="sidebar_menu">
 
- <!--타임라인 버튼-->
- <div class="menu_item" id="timeline_button">
-    <img src="timeline.png">
-    <button class="menu_btn">
-        <span>타임라인</span>
-    </button>
- </div>
+            <!-- 홈 -->
+            <div class="menu_item"
+                 id="home_button">
 
- <!--핵심요약 버튼-->
- <div class="menu_item">
-     <img src="summary.png">
-    <button class="menu_btn">
-        <span>핵심 요약</span>
-    </button>
- </div>
+                <img src="home.png">
 
- <!--퀴즈 버튼-->
- <div class="menu_item">
-    <img src="quiz.png">
-    <button class="menu_btn">
-        <span>퀴즈</span>
-    </button>
- </div>
+                <button class="menu_btn">
+                    홈
+                </button>
 
- <!--오답노트 버튼-->
- <div class="menu_item">
-     <img src="wrong.png">
-    <button class="menu_btn">
-        <span>오답노트</span>
-    </button>
- </div>
-</div>
-</div>
+            </div>
 
-<div class="main">
-  
- <div class="content">
-    <h1>메인 화면</h1>
-    <p>여기에 페이지 내용이 들어갑니다.</p>
- </div>
 
- <!--타임라인 화면-->
-<div class="timeline_page">
+            <!-- 타임라인 -->
+            <div class="menu_item"
+                 id="timeline_button">
 
-    <div class="timeline_layout">
+                <img src="timeline.png">
 
-        <div class="video_container">
-            <video id="video" controls>
-                <source id="video_mp4" src="" type="video/mp4">
-            </video>
+                <button class="menu_btn">
+                    타임라인
+                </button>
+
+            </div>
+
+
+            <!-- 핵심요약 -->
+            <div class="menu_item">
+
+                <img src="summary.png">
+
+                <button class="menu_btn">
+                    핵심 요약
+                </button>
+
+            </div>
+
+
+            <!-- 퀴즈 -->
+            <div class="menu_item">
+
+                <img src="quiz.png">
+
+                <button class="menu_btn">
+                    퀴즈
+                </button>
+
+            </div>
+
+
+            <!-- 오답노트 -->
+            <div class="menu_item">
+
+                <img src="wrong.png">
+
+                <button class="menu_btn">
+                    오답노트
+                </button>
+
+            </div>
+
         </div>
-
-        <div class="timeline"></div>
 
     </div>
 
-</div>
 
-</div>
 
-<script>
-    /* 임시 데이터 */
-    const timelineData = [
-    {
-        time: 0,
-        title: "강의 소개",
-       
-    },
-    {
-        time: 162,
-        title: "명사",
-    },
-    {
-        time: 285,
-        title: "가산명사",
-    },
-       
-    {
-        time: 370,
-        title: "불가산 명사",
-       
-    }
-];
-/* 전달받은 초단위 시간을 분:초 형태로 변환 */
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const seconds_left = seconds % 60;
+    <!-- =========================
+         메인
+    ========================= -->
 
-    return `${String(minutes).padStart(2, "0")}:${String(seconds_left).padStart(2, "0")}`;
-}
+    <div class="main">
 
-/* 타임라인이 들어갈 html 요소 */
-const timeline = document.querySelector(".timeline");
 
-/* 임시데이터를 하나씩 꺼내서 화면에 출력  */
-timelineData.forEach(item =>{
-    const timeline_items = document.createElement("div");
-    timeline_items.classList.add("timeline_item"); /*<div class ="timeline_item"></div> */
-    
-    /* 임시데이터의 시간과 타이틀을 화면에 보여줌 */
-    timeline_items.innerHTML = `
-        <div class="timeline_time">
-            ${formatTime(item.time)}
+        <!-- 기본 화면 -->
+
+        <div class="content">
+
+            <h1>메인 화면</h1>
+
+            <p>
+                왼쪽 메뉴에서 타임라인을 클릭해보세요.
+            </p>
+
         </div>
 
-        <div class="timeline_content">
-            <h4>${item.title}</h4>
+
+
+        <!-- =========================
+             타임라인 화면
+        ========================= -->
+
+        <div class="timeline_page">
+
+            <h1>타임라인</h1>
+
+
+            <div class="timeline_layout">
+
+
+                <!-- 영상 -->
+
+                <div class="video_container">
+
+                    <video id="video" controls>
+
+                        <!-- 테스트용 영상 -->
+
+                        <source
+                            id="video_mp4"
+                            src="test.mp4"
+                            type="video/mp4">
+
+                        브라우저가 영상을 지원하지 않습니다.
+
+                    </video>
+
+                </div>
+
+
+
+                <!-- 타임라인 -->
+
+                <div class="timeline"></div>
+
+
+            </div>
+
         </div>
-    `;
-    /* 부모노드<div>에 timeline_items를 추가함 */
-    timeline.appendChild(timeline_items);
 
-});
-
-/* 타임라인을 클릭했을 때 타임라인 화면이 보이게 */
-
-const timeline_button = document.querySelector("#timeline_button");
-const timeline_page = document.querySelector(".timeline_page");
-const content = document.querySelector(".content");
-
-timeline_button.addEventListener("click", () => {
-
-    content.style.display = "none";
-    timeline_page.style.display = "block";
-
-});
+    </div>
 
 
-</script>
-</body>
-</html>
 
+    <script>
+
+        /* =====================================
+           테스트용 타임라인 데이터
+        ===================================== */
+
+        const timelineData = [
+
+            {
+                time: 0,
+                title: "강의 소개"
+            },
+
+            {
+                time: 5,
+                title: "명사"
+            },
+
+            {
+                time: 10,
+                title: "가산명사"
+            },
+
+            {
+                time: 15,
+                title: "불가산 명사"
+            }
+
+        ];
+
+
+
+        /* =====================================
+           영상
+        ===================================== */
+
+        const video = document.querySelector("#video");
+
+
+
+        /* =====================================
+           초 → MM:SS
+        ===================================== */
+
+        function formatTime(seconds) {
+
+            const minutes =
+                Math.floor(seconds / 60);
+
+            const secondsLeft =
+                Math.floor(seconds % 60);
+
+            return (
+                String(minutes).padStart(2, "0")
+                + ":"
+                + String(secondsLeft).padStart(2, "0")
+            );
+
+        }
+
+
+
+        /* =====================================
+           타임라인
+        ===================================== */
+
+        const timeline =
+            document.querySelector(".timeline");
+
+
+
+        timelineData.forEach((item, index) => {
+
+            const timelineItem =
+                document.createElement("div");
+
+
+            timelineItem.classList.add(
+                "timeline_item"
+            );
+
+
+            timelineItem.innerHTML = `
+
+                <div class="timeline_time">
+
+                    ${formatTime(item.time)}
+
+                </div>
+
+
+                <div class="timeline_content">
+
+                    <h4>
+                        ${item.title}
+                    </h4>
+
+                </div>
+
+            `;
+
+
+
+            /* ===============================
+               타임라인 클릭
+            =============================== */
+
+            timelineItem.addEventListener(
+                "click",
+                () => {
+
+                    /*
+                     * 해당 타임라인의
+                     * 영상 시간으로 이동
+                     */
+
+                    video.currentTime =
+                        item.time;
+
+
+                    /*
+                     * 영상 자동 재생
+                     */
+
+                    video.play();
+
+
+                    /*
+                     * 현재 선택된 항목 표시
+                     */
+
+                    document
+                        .querySelectorAll(
+                            ".timeline_item"
+                        )
+                        .forEach(item => {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        });
+
+
+                    timelineItem.classList.add(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            timeline.appendChild(
+                timelineItem
+            );
+
+        });
+
+
+
+        /* =====================================
+           영상 재생 중 현재 타임라인 표시
+        ===================================== */
+
+        video.addEventListener(
+            "timeupdate",
+            () => {
+
+                let currentIndex = 0;
+
+
+                /*
+                 * 현재 영상 시간이
+                 * 어느 구간에 속하는지 찾음
+                 */
+
+                for (
+                    let i = 0;
+                    i < timelineData.length;
+                    i++
+                ) {
+
+                    if (
+                        video.currentTime
+                        >= timelineData[i].time
+                    ) {
+
+                        currentIndex = i;
+
+                    } else {
+
+                        break;
+
+                    }
+
+                }
+
+
+                /*
+                 * 모든 항목의 active 제거
+                 */
+
+                document
+                    .querySelectorAll(
+                        ".timeline_item"
+                    )
+                    .forEach(
+                        item => {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                /*
+                 * 현재 항목 active
+                 */
+
+                const items =
+                    document.querySelectorAll(
+                        ".timeline_item"
+                    );
+
+
+                if (items[currentIndex]) {
+
+                    items[currentIndex]
+                        .classList.add(
+                            "active"
+                        );
+
+                }
+
+            }
+        );
+
+
+
+        /* =====================================
+           타임라인 버튼
+        ===================================== */
+
+        const timelineButton =
+            document.querySelector(
+                "#timeline_button"
+            );
+
+
+        const timelinePage =
+            document.querySelector(
+                ".timeline_page"
+            );
+
+
+        const content =
+            document.querySelector(
+                ".content"
+            );
+
+
+        timelineButton.addEventListener(
+            "click",
+            () => {
+
+                content.style.display =
+                    "none";
+
+                timelinePage.style.display =
+                    "block";
+
+            }
+        );
+
+
+
+        /* =====================================
+           홈 버튼
+        ===================================== */
+
+        const homeButton =
+            document.querySelector(
+                "#home_button"
+            );
+
+
+        homeButton.addEventListener(
+            "click",
+            () => {
+
+                timelinePage.style.display =
+                    "none";
+
+                content.style.display =
+                    "block";
+
+            }
+        );
+
+    </script>
 
 </body>
 </html>
