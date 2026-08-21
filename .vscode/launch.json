@@ -1,0 +1,20 @@
+{   // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=8303
+
+    /*
+    작성일시: 2026-07-07
+    작성자: 한동희
+    목적: 디버거 상세설정 파일(자동생성)
+    */
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch", // 디버깅 시작 시 현재 열려있는 파일을 실행하도록 설정
+            "program": "${file}", // 현재 열려있는 파일을 디버깅 대상으로 지정
+            "console": "integratedTerminal"
+        }
+    ]
+}
