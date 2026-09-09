@@ -488,9 +488,9 @@ def main():
     args = parser.parse_args()
 
     try:
-        whisper_data = load_whisper_json(args.input)
+        whisper_data = load_whisper_json(args.input) #whisper data 불러오기
 
-        custom_prompt = None
+        custom_prompt = None #custom_prompt: 사용자가 직접 작성한 프롬프트 저장
 
         if args.custom_prompt_file:
             with open(
