@@ -25,4 +25,7 @@
 ## server/requirements.txt
 ## 필요한 패키지 목록
 
+## cd /Users/kimyeongho/logic-pj/logic_lecturenoteai/server
+## source venv/bin/activate
+## uvicorn app.main:app --reload
 ## mysql -u root -p lecture_pipeline_db

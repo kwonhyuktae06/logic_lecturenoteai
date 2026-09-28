@@ -1,7 +1,8 @@
-from typing import List
-from fastapi import APIRouter, UploadFile, File, Depends, Form, HTTPException, BackgroundTasks
+from pathlib import Path
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.schemas.upload import (
     UploadFileResponse,
@@ -14,13 +15,14 @@ from app.services.upload import (
     upload_file,
     upload_url,
     get_upload_status,
-    process_audio_image_pipeline,
+    process_video_pipeline,
     run_pipeline_background,
 )
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
 
+# 파일 업로드 엔드포인트
 @router.post("/file", response_model=UploadFileResponse)
 async def upload_file_endpoint(
     file: UploadFile = File(...),
@@ -35,6 +37,7 @@ async def upload_file_endpoint(
     )
 
 
+# URL 업로드 엔드포인트
 @router.post("/url", response_model=UploadUrlResponse)
 async def upload_url_endpoint(
     request: UploadUrlRequest,
@@ -48,6 +51,7 @@ async def upload_url_endpoint(
     )
 
 
+# 업로드 상태 조회 엔드포인트
 @router.get("/{upload_id}", response_model=UploadStatusResponse)
 def get_status_endpoint(
     upload_id: str,
@@ -69,23 +73,31 @@ def get_status_endpoint(
 @router.post("/pipeline", response_model=PipelineAcceptedResponse)
 async def pipeline_endpoint(
     background_tasks: BackgroundTasks,
-    audio: UploadFile = File(...),
-    images: List[UploadFile] = File(...),
-    image_count: int = Form(default=1),
+    video: UploadFile = File(...), 
     db: Session = Depends(get_db)
 ):
-    if image_count < 1:
-        raise HTTPException(status_code=400, detail="image_count는 1 이상이어야 해요.")
+    allowed_video_extensions = [".mp4", ".mov", ".avi", ".mkv", ".webm"]
+    file_ext = Path(video.filename).suffix.lower()
+    if file_ext not in allowed_video_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"허용되지 않는 영상 형식이에요. 허용: {allowed_video_extensions}"
+        )
 
-    if len(images) != image_count:
-        raise HTTPException(status_code=400, detail="전송한 이미지 수와 image_count가 일치하지 않아요.")
+    video.file.seek(0, 2)
+    file_size = video.file.tell()
+    video.file.seek(0)
+    if file_size > settings.MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail="파일 크기가 너무 커요. 최대 500MB"
+        )
 
-    upload, audio_path, saved_images = await process_audio_image_pipeline(audio, images, db)
-    background_tasks.add_task(run_pipeline_background, upload.id, audio_path, saved_images)
+    upload, video_path = await process_video_pipeline(video, db)
+    background_tasks.add_task(run_pipeline_background, upload.id, video_path)
 
     return PipelineAcceptedResponse(
         upload_id=upload.id,
         status=upload.status,
-        image_count=len(saved_images),
-        audio_file_name=audio.filename,
+        video_file_name=video.filename,
     )

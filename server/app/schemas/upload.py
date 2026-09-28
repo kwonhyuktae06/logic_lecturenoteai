@@ -43,8 +43,7 @@ class UploadStatusResponse(BaseModel):
 class PipelineAcceptedResponse(BaseModel):
     upload_id: str
     status: str
-    image_count: int
-    audio_file_name: str
+    video_file_name: str
 
     class Config:
         from_attributes = True
