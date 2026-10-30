@@ -150,7 +150,7 @@ class QwenLectureAnalyzer:
         print("[Qwen] 모델 로딩이 완료되었습니다.")
 
     @staticmethod
-    def format_low_confidence_words(
+    def format_low_confidence_words( #확신도 낮은 단어들을 추리는 함수
         words: Optional[List[Dict[str, Any]]]
     ) -> str:
         if not words:

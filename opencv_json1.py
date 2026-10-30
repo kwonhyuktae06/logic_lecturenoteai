@@ -8,6 +8,11 @@
 - Whisper 타겟 시간대 중복 캡처 방지 로직 적용 (processed_whisper_timestamps 사용)
 - captures 폴더 자동 생성 및 원본 실물 JPG 파일 1개만 저장
 - 추가 캡처 발생 시 실물 파일 중복 생성 없이 원본 파일 경로만 JSON에 저장하도록 수정
+
+[수정 및 보완 사항(8/3)]
+1. 원본 이미지 저장 경로를 captures 폴더로 지정하고, 최초 프레임만 저장하도록 변경
+2. 화면 전환 감지 시 PPT 이미지 저장 경로를 captures 폴더로 지정하고, 실제 PPT 이미지 경로를 JSON 데이터에 바인딩
+3. OpenCV waitKey()를 1ms로 고정하여 프레임 연산 속도를 원본 FPS에 맞추도록 수정
 """
 
 import cv2      # OpenCV 라이브러리
@@ -110,12 +115,14 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
     # 원본 FPS에 맞춘 waitKey 대기시간 연산
     delay_ms = max(1, int(1000 / orig_fps))
 
+    # 루프 시작 전 변수 초기화 (초기값은 첫 프레임 경로)
+    current_slide_image_path = original_image_path
+
     # 비디오의 모든 프레임을 끝까지 순회하는 루프
     while True:
         ret, frame = cap.read()
         if not ret:
             break
-
         frame_count += 1
         current_sec = frame_count / orig_fps
         hms_string = format_timestamp(current_sec)
@@ -145,22 +152,26 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
                 is_whisper_target = True
                 processed_whisper_timestamps.add(t)
                 break
+#==================================================================================          
         
         # 화면 전환이 감지되었거나 Whisper 타겟 시간일 경우 캡처 데이터 추가
         if is_scene_changed or is_whisper_target:
             reason = "WHISPER_TARGET" if is_whisper_target else "PPT_SCENE_CHANGE"
             
-            # ------------------------------------------------------------------
-            # [수정 핵심 2] 매번 실물 이미지(cv2.imwrite)를 추가 생성하는 코드 삭제!
-            # 대신 기존 저장된 원본 이미지의 '경로'만 JSON에 포함시킵니다.
-            # ------------------------------------------------------------------
+            if is_scene_changed:
+                safe_hms = hms_string.replace(":", "_")
+                current_slide_image_path = f"{output_dir}/{safe_hms}_PPT_SCENE_CHANGE.jpg"
+                cv2.imwrite(current_slide_image_path, frame)
+
             capture_item = {
                 "timestamp_sec": round(current_sec, 2),
                 "timestamp_hms": hms_string,
                 "capture_reason": reason,
-                "image_path": original_image_path  # 파일 추가 저장 없이 원본 경로 전달
+                "image_path": current_slide_image_path  # 현재 시점의 실제 PPT 이미지 경로 바인딩
             }
             video_timeline_results.append(capture_item)
+#==================================================================================
+
             
             # 시각적 테두리 및 텍스트 효과 적용
             thickness = max(4, int(win_w * 0.015))
@@ -179,9 +190,12 @@ def generate_opencv_json_pipeline(video_path, low_confidence_timestamps):
         cv2.putText(display_frame, f"Time: {hms_string}", (30, win_h - 30), 
                     cv2.FONT_HERSHEY_SIMPLEX, font_scale_sub, (255, 255, 255), 2)
 
-        # 화면 출력 및 원본 FPS 대기시간 적용
+#==================================================================================
+        #[수정 부분] 기존 waitKey(delay_ms) 대신 cv2.waitKey(1)로 교체
+        # 화면 출력 후 1ms만 쉬고 곧바로 다음 프레임 연산 진행
         cv2.imshow(window_name, display_frame)
-        cv2.waitKey(delay_ms)
+        cv2.waitKey(1)
+#====================================================================================
 
         # X 버튼 클릭 시 종료
         if cv2.getWindowProperty(window_name, cv2.WND_PROP_VISIBLE) < 1:
