@@ -24,6 +24,9 @@ def is_low_confidence(segment: dict) -> bool:
         or segment["compression_ratio"] > COMPRESSION_RATIO_THRESHOLD
     )
 
+def transcribe(audio_file: str) -> dict:
+    model = whisper.load_model("large-v3") # 모델 로드하는 부분을 함수 안으로 이동하여 필요할 때만 로딩되도록 변경(26.08.31 한동희)
+    result = model.transcribe(audio_file, verbose=False)
 
 # 3. 음성 인식 진행
 audio_file = "test.mp3"  # 변환할 오디오 파일 경로
@@ -41,7 +44,7 @@ for segment in result["segments"]:
         "start": round(segment["start"], 2),
         "end": round(segment["end"], 2),
         "text": segment["text"].strip(),
-        "avg_logprob": round(float(segment["avg_logprob"]), 4),
+        "avg_logprob": round(float(segment["avg_logprob"]), 4), 
         "no_speech_prob": round(float(segment["no_speech_prob"]), 4),
         "compression_ratio": round(float(segment["compression_ratio"]), 4),
         "low_confidence": flagged,  # 삭제 아님 - 리뷰용 표시만
@@ -64,16 +67,18 @@ output_data = {
     "low_confidence_timestamps": low_confidence_timestamps,
 }
 
-# 7. JSON 파일로 저장 (한글 깨짐 방지 및 들여쓰기 적용)
-json_filename = "whisper_output.json"
-with open(json_filename, "w", encoding="utf-8") as f:
-    json.dump(output_data, f, ensure_ascii=False, indent=4)
+# 7. 최종 결과 출력
 
-# 8. 최종 결과 출력
-print("\n===============================")
-print("Complete conversion and JSON storage.")
-print(f"saved file name: {json_filename}")
-print(f"low-confidence segments: {low_confidence_count} / {len(segments_data)}")
-print("converted content:")
-print(result["text"])
-print("===============================\n")
+if __name__ == "__main__":
+    #json 파일 저장과 화면 출력은 main()에서만 수행하도록 분리
+    data = transcribe("test.mp3")
+    json_filename = "whisper_output.json"
+    with open(json_filename, "w", encoding="utf-8") as f:
+        json.dump(output_data, f, ensure_ascii=False, indent=4)
+    print("\n===============================")
+    print("Complete conversion and JSON storage.")
+    print(f"saved file name: {json_filename}")
+    print(f"low-confidence segments: {low_confidence_count} / {len(segments_data)}")
+    print("converted content:")
+    print(result["text"])
+    print("===============================\n")
