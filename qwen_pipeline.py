@@ -127,10 +127,11 @@ Whisper 확신도가 낮은 단어가 있다면 문맥에 맞는 단어를 추�
 
 
 class QwenLectureAnalyzer:
-    def __init__(self, model_name: str = MODEL_NAME): #객체 default값 설정
+    def __init__(self, model_name: str = MODEL_NAME): #Qwen 객체 생성자: 객체 default값 설정
         self.model_name = model_name
 
         print(f"[Qwen] 모델을 불러오는 중입니다: {model_name}")
+        #양자화 설정값 저장
         quant_config = BitsAndBytesConfig( 
                     load_in_4bit=True,                      # 4비트로 양자화
                     bnb_4bit_compute_dtype=torch.float16,   # 계산은 16비트로 수행
@@ -138,13 +139,14 @@ class QwenLectureAnalyzer:
                     bnb_4bit_use_double_quant=True,         # 이중 양자화로 메모리 추가 절약
                     llm_int8_enable_fp32_cpu_offload=True   # CPU 오프로딩 활성화 (GPU 메모리 부족 시에만 CPU로 연산)
                 )
-        
+        #실제 모델 생성
         self.model = Qwen3VLForConditionalGeneration.from_pretrained(
             model_name,
             torch_dtype="auto",
-            device_map="auto"
+            device_map="auto",
+            quantization_config = quant_config #model 값을 설정할 때 양자화 설정이 누락됨. 26.11.06 수정
         )
-
+        #객체(모델)의 데이터를 설정(AutoProcessor 객체가 Qwen 모델에 맞는 전처리기를 가져옴)
         self.processor = AutoProcessor.from_pretrained(model_name)
 
         print("[Qwen] 모델 로딩이 완료되었습니다.")
@@ -325,7 +327,7 @@ class QwenLectureAnalyzer:
             raise RuntimeError("Qwen 분석 결과가 생성되지 않았습니다.")
 
         return output_text[0].strip()
-
+# end class QwenLectureAnalyzer
 
 def load_whisper_json(file_path: str) -> Dict[str, Any]:
     path = Path(file_path)
