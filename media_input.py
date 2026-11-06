@@ -12,8 +12,8 @@ from pathlib import Path
 
 AUDIO_EXTENSIONS = {".mp3", ".wav", ".m4a"}
 VIDEO_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv"}
-
-
+# 텍스트 관련 파일(.txt, ".pdf") 확장자도 추가 (Whisper가 지원하는 형식이면 됨)
+    
 # 지정된 확장자 목록(AUDIO_EXTENSIONS, VIDEO_EXTENSIONS)에 없는 파일이 들어왔을 때
 # 발생시키는 전용 예외. ValueError 대신 써서 호출하는 쪽에서 명확히 구분해 잡을 수 있게 함
 class UnsupportedMediaTypeError(Exception):
