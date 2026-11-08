@@ -24,6 +24,7 @@
 import argparse
 import json
 import os
+os.environ["BNB_CUDA_VERSION"] = "130"  # 26.11.06 한동희: bitsandbytes CUDA 버전 문제 해결
 import uuid
 from datetime import datetime
 from pathlib import Path

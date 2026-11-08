@@ -13,6 +13,7 @@
     python main.py lecture_test4.mp4
     python main.py lecture_test4.mp4 --skip-stage transcribe --skip-stage note
     python main.py lecture_test4.mp4 --allow-gui --prompt-type error_check
+    python main.py lecture_test4.mp4 --allow-gui --prompt-type error_check --max-images 3
 
 단계 사이 데이터 규격:
     1단계 출력  {"media_type": "video"|"audio", "video_path": str|None, "audio_path": str}
@@ -22,7 +23,8 @@
                  "capture_reason": str, "image_path": str}, ...]
     4단계 출력  run_qwen_pipeline()이 주는 dict 그대로
 """
-
+import os
+os.environ["BNB_CUDA_VERSION"] = "130"  # 26.11.06 한동희: bitsandbytes CUDA 버전 문제 해결
 import argparse
 import importlib
 import inspect
