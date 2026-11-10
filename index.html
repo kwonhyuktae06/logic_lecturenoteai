@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강의 정리 AI</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #fafafa;
+        }
+
+        /* =========================
+           사이드바
+        ========================= */
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo h2 {
+            opacity: 0;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin: 0 15px;
+            flex-shrink: 0;
+        }
+
+        .sidebar:hover .logo h2 {
+            opacity: 1;
+        }
+
+        .sidebar {
+            width: 70px;
+            height: 100vh;
+            transition: width 0.3s ease;
+            border-right: 2px solid #eeeeee;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar:hover {
+            width: 200px;
+        }
+
+        .sidebar_menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu_item {
+            display: flex;
+            align-items: center;
+            padding: 0 2px;
+            overflow: hidden;
+            background-color: transparent;
+            border: none;
+            height: 50px;
+            box-sizing: border-box;
+            margin: 0 8px 0 12px;
+            cursor: pointer;
+        }
+
+        .menu_item img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin: 0 10px;
+            flex-shrink: 0;
+        }
+
+        .menu_btn {
+            opacity: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            border: none;
+            padding: 10px 0;
+            background-color: transparent;
+            text-align: left;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .menu_item:hover {
+            background-color: #e1e4ec;
+            border-radius: 8px;
+        }
+
+        .sidebar:hover .menu_btn {
+            opacity: 1;
+        }
+
+        .sidebar_footer {
+            margin-bottom: 20px;
+        }
+
+        .main {
+            margin-left: 70px;
+            transition: margin-left 0.3s ease;
+            padding: 30px;
+        }
+
+        .sidebar:hover ~ .main {
+            margin-left: 200px;
+        }
+
+        /* =========================
+           메인 대시보드
+        ========================= */
+        .content {
+            display: block;
+            max-width: 1000px;
+        }
+
+        .welcome_title {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #222;
+        }
+        
+        .welcome_subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* 업로드 카드 및 파일 표시 영역 */
+        .upload_card {
+            background-color: #ffffff;
+            border: 2px dashed #d0d7de;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s;
+            margin-bottom: 35px;
+        }
+
+        .upload_card:hover {
+            border-color: #e9bd8b;
+            background-color: #fefef8;
+        }
+
+        .upload_card h3 {
+            margin: 10px 0 5px 0;
+            font-size: 18px;
+        }
+
+        .upload_card p {
+            font-size: 13px;
+            color: #888;
+            margin: 0;
+        }
+
+        .file_info {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #f0f7ff;
+            border: 1px solid #cce3ff;
+            border-radius: 8px;
+            color: #0052cc;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* 최근 정리 강의 목록 */
+        .section_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section_title {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+
+        .grid_container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .note_card {
+            background-color: #ffffff;
+            border: 1px solid #e1e4ec;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .note_card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        .note_tag {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: #555;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .note_card h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #222;
+        }
+
+        .note_info {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* =========================
+           타임라인 화면
+        ========================= */
+        .timeline_page {
+            display: none;
+        }
+
+        .timeline_layout {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .video_container {
+            width: 70%;
+        }
+
+        #video {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            background-color: black;
+        }
+
+        .timeline {
+            width: 300px;
+        }
+
+        .timeline_item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .timeline_item:hover, .timeline_item.active {
+            background-color: #e1e4ec;
+        }
+
+        .timeline_item.active {
+            font-weight: bold;
+        }
+
+        .timeline_time {
+            width: 70px;
+            flex-shrink: 0;
+            font-size: 15px;
+        }
+
+        .timeline_content {
+            margin-left: 10px;
+            font-size: 15px;
+        }
+
+        .timeline_content h4 {
+            margin: 0;
+        }
+
+        /* =========================
+           로그인 모달 (팝업)
+        ========================= */
+        .modal_overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal_box {
+            background-color: #ffffff;
+            width: 360px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .close_btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .modal_box h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .input_group {
+            margin-bottom: 15px;
+        }
+
+        .input_group label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .input_group input {
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .modal_login_btn {
+            width: 100%;
+            height: 45px;
+            background-color: #e9bd8b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal_login_btn:hover {
+            background-color: #f9bb73;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div>
+            <div class="logo">
+                <img src="circle.png" alt="logo">
+                <h2>강의 정리 AI</h2>
+            </div>
+
+            <div class="sidebar_menu">
+                <div class="menu_item" id="home_button">
+                    <img src="home.png" alt="home">
+                    <button class="menu_btn">홈</button>
+                </div>
+                <div class="menu_item" id="timeline_button">
+                    <img src="timeline.png" alt="timeline">
+                    <button class="menu_btn">타임라인</button>
+                </div>
+                <div class="menu_item">
+                    <img src="summary.png" alt="summary">
+                    <button class="menu_btn">핵심 요약</button>
+                </div>
+                <div class="menu_item">
+                    <img src="quiz.png" alt="quiz">
+                    <button class="menu_btn">퀴즈</button>
+                </div>
+                <div class="menu_item">
+                    <img src="wrong.png" alt="wrong">
+                    <button class="menu_btn">오답노트</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar_footer">
+            <div class="menu_item" id="open_login_btn">
+                <img src="circle.png" alt="login">
+                <button class="menu_btn">로그인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 영역 -->
+    <div class="main">
+
+        <!-- 기본 메인 대시보드 화면 -->
+        <div class="content">
+            <h1 class="welcome_title">안녕하세요! 👋</h1>
+            <p class="welcome_subtitle">새로운 강의를 정리하거나 기존 학습 내용을 이어 복습해 보세요.</p>
+
+            <!-- 숨겨진 파일 input 태그 -->
+            <input type="file" id="fileInput" accept=".mp4,.mp3,.pdf" style="display: none;">
+
+            <!-- 파일 업로드 카드 영역 -->
+            <div class="upload_card" id="uploadCard">
+                <div id="uploadIcon" style="font-size: 32px;">📁</div>
+                <h3 id="uploadTitle">새 강의 음성 / PDF 업로드하기</h3>
+                <p id="uploadDesc">클릭하여 강의 파일(.mp4, .mp3, .pdf)을 올리면 AI가 즉시 분석합니다.</p>
+
+                <!-- 선택된 파일 정보가 뜰 위치 -->
+                <div class="file_info" id="fileInfo"></div>
+            </div>
+
+            <!-- 최근 생성 노트 리스트 -->
+            <div class="section_header">
+                <h3 class="section_title">최근 정리한 강의</h3>
+            </div>
+
+            <div class="grid_container">
+                <div class="note_card" onclick="openTimelineDemo()">
+                    <span class="note_tag">전공 필수</span>
+                    <h4>Sample Lecture 01 - 서비스 개요 및 OT</h4>
+                    <div class="note_info">2026.11.10 • 타임라인 4개</div>
+                </div>
+
+                <div class="note_card">
+                    <span class="note_tag">교양 과목</span>
+                    <h4>Sample Lecture 02 - 기초 이론 정리</h4>
+                    <div class="note_info">2026.11.08 • 타임라인 6개</div>
+                </div>
+
+                <div class="note_card">
+                    <span class="note_tag">전공 선택</span>
+                    <h4>Sample Lecture 03 - 핵심 심화 학습</h4>
+                    <div class="note_info">2026.11.05 • 타임라인 5개</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 타임라인 화면 -->
+        <div class="timeline_page">
+            <h1>타임라인</h1>
+            <div class="timeline_layout">
+                <div class="video_container">
+                    <video id="video" controls>
+                        <source id="video_mp4" src="test.mp4" type="video/mp4">
+                        브라우저가 영상을 지원하지 않습니다.
+                    </video>
+                </div>
+                <div class="timeline"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 로그인 모달 -->
+    <div class="modal_overlay" id="login_modal">
+        <div class="modal_box">
+            <button class="close_btn" id="close_login_btn">&times;</button>
+            <h2>로그인</h2>
+            <form onsubmit="event.preventDefault(); alert('로그인 성공!'); modal.style.display='none';">
+                <div class="input_group">
+                    <label for="email">이메일 / 학번</label>
+                    <input type="text" id="email" placeholder="아이디를 입력하세요" required>
+                </div>
+                <div class="input_group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" placeholder="비밀번호를 입력하세요" required>
+                </div>
+                <button type="submit" class="modal_login_btn">로그인하기</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 업로드 카드 관련 기능
+        const uploadCard = document.getElementById('uploadCard');
+        const fileInput = document.getElementById('fileInput');
+        const uploadIcon = document.getElementById('uploadIcon');
+        const uploadTitle = document.getElementById('uploadTitle');
+        const uploadDesc = document.getElementById('uploadDesc');
+        const fileInfo = document.getElementById('fileInfo');
+
+        // 카드 클릭 시 내 컴퓨터 파일 선택 창 켜기
+        uploadCard.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // 파일 선택이 완료되었을 때 실행
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                uploadIcon.innerText = "✅";
+                uploadTitle.innerText = "업로드 준비 완료!";
+                uploadDesc.innerText = "AI가 해당 파일을 분석할 준비가 되었습니다.";
+                fileInfo.style.display = "block";
+                fileInfo.innerText = `📄 선택된 파일: ${file.name} (${fileSizeMB} MB)`;
+            }
+        });
+
+        // 타임라인 기능
+        const timelineData = [
+            { time: 0, title: "강의 소개" },
+            { time: 5, title: "명사" },
+            { time: 10, title: "가산명사" },
+            { time: 15, title: "불가산 명사" }
+        ];
+
+        const video = document.querySelector("#video");
+        const timeline = document.querySelector(".timeline");
+        const timelineButton = document.querySelector("#timeline_button");
+        const homeButton = document.querySelector("#home_button");
+        const timelinePage = document.querySelector(".timeline_page");
+        const content = document.querySelector(".content");
+
+        // 로그인 모달 관련 기능
+        const openBtn = document.getElementById('open_login_btn');
+        const closeBtn = document.getElementById('close_login_btn');
+        const modal = document.getElementById('login_modal');
+
+        openBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
+        closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secondsLeft = Math.floor(seconds % 60);
+            return String(minutes).padStart(2, "0") + ":" + String(secondsLeft).padStart(2, "0");
+        }
+
+        timelineData.forEach((item) => {
+            const timelineItem = document.createElement("div");
+            timelineItem.classList.add("timeline_item");
+            timelineItem.innerHTML = `
+                <div class="timeline_time">${formatTime(item.time)}</div>
+                <div class="timeline_content"><h4>${item.title}</h4></div>
+            `;
+
+            timelineItem.addEventListener("click", () => {
+                video.currentTime = item.time;
+                video.play();
+                document.querySelectorAll(".timeline_item").forEach(i => i.classList.remove("active"));
+                timelineItem.classList.add("active");
+            });
+
+            timeline.appendChild(timelineItem);
+        });
+
+        video.addEventListener("timeupdate", () => {
+            let currentIndex = 0;
+            for (let i = 0; i < timelineData.length; i++) {
+                if (video.currentTime >= timelineData[i].time) {
+                    currentIndex = i;
+                } else {
+                    break;
+                }
+            }
+            const items = document.querySelectorAll(".timeline_item");
+            items.forEach(i => i.classList.remove("active"));
+            if (items[currentIndex]) {
+                items[currentIndex].classList.add("active");
+            }
+        });
+
+        function showTimeline() {
+            content.style.display = "none";
+            timelinePage.style.display = "block";
+        }
+
+        function showHome() {
+            timelinePage.style.display = "none";
+            content.style.display = "block";
+        }
+
+        timelineButton.addEventListener("click", showTimeline);
+        homeButton.addEventListener("click", showHome);
+        function openTimelineDemo() { showTimeline(); }
+    </script>
+</body>
+</html>
