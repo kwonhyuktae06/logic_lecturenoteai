@@ -6,222 +6,8 @@
 
     <title>강의 정리 AI</title>
 
-    <style>
-
-        /* =========================
-           사이드바
-        ========================= */
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .logo h2 {
-            opacity: 0;
-            white-space: nowrap;
-            transition: opacity 0.2s ease;
-            background-color: transparent;
-        }
-
-        .logo img {
-            width: 45px;
-            height: 45px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 15px;
-        }
-
-        .sidebar:hover .logo h2 {
-            opacity: 1;
-        }
-
-        .sidebar {
-            width: 70px;
-            height: 100%;
-
-            transition: width 0.3s ease;
-
-            border-right: 2px solid #eeeeee;
-
-            position: fixed;
-            top: 0;
-            left: 0;
-
-            z-index: 1000;
-        }
-
-        .sidebar:hover {
-            width: 200px;
-        }
-
-        .sidebar_menu {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .menu_item {
-            display: flex;
-            align-items: center;
-            flex-direction: row;
-
-            padding: 0 2px;
-            overflow: hidden;
-
-            background-color: transparent;
-            border: none;
-
-            height: 50px;
-            box-sizing: border-box;
-
-            margin: 0 8px 0 12px;
-
-            cursor: pointer;
-        }
-
-        .menu_item img {
-            width: 30px;
-            height: 30px;
-
-            object-fit: contain;
-            display: block;
-
-            margin: 0 8px;
-
-            flex-shrink: 0;
-        }
-
-        .menu_btn {
-            opacity: 0;
-            overflow: hidden;
-            white-space: nowrap;
-
-            border: none;
-            padding: 10px;
-
-            background-color: transparent;
-            text-align: left;
-
-            transition: opacity 0.3s ease;
-
-            cursor: pointer;
-        }
-
-        .menu_item:hover {
-            background-color: #e1e4ec;
-            border-radius: 8px;
-        }
-
-        .sidebar:hover .menu_btn {
-            opacity: 1;
-        }
-
-        .main {
-            margin-left: 70px;
-            transition: margin-left 0.3s ease;
-        }
-
-        .sidebar:hover ~ .main {
-            margin-left: 200px;
-        }
-
-
-        /* =========================
-           기본 화면
-        ========================= */
-
-        .content {
-            display: block;
-            padding: 30px;
-        }
-
-
-        /* =========================
-           타임라인 화면
-        ========================= */
-
-        .timeline_page {
-            display: none;
-            padding: 30px;
-        }
-
-        .timeline_layout {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 40px;
-        }
-
-
-        /* 영상 */
-
-        .video_container {
-            width: 70%;
-        }
-
-        #video {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            height: auto;
-            background-color: black;
-        }
-
-
-        /* 타임라인 */
-
-        .timeline {
-            width: 300px;
-        }
-
-        .timeline_item {
-            display: flex;
-            align-items: center;
-
-            margin-bottom: 5px;
-            padding: 8px;
-
-            border-radius: 5px;
-
-            cursor: pointer;
-
-            transition: background-color 0.15s ease;
-        }
-
-        .timeline_item:hover {
-            background-color: #e1e4ec;
-        }
-
-        .timeline_item.active {
-            background-color: #e1e4ec;
-            font-weight: bold;
-        }
-
-        .timeline_time {
-            width: 70px;
-            flex-shrink: 0;
-
-            font-size: 15px;
-            white-space: nowrap;
-        }
-
-        .timeline_content {
-            margin-left: 10px;
-            font-size: 15px;
-
-            white-space: nowrap;
-        }
-
-        .timeline_content h4 {
-            margin: 0;
-        }
-
-    </style>
 </head>
-
-
+<link rel ="stylesheet" href ="3.css">
 <body>
 
     <!-- =========================
@@ -231,7 +17,7 @@
     <div class="sidebar">
 
         <div class="logo">
-            <img src="circle.png">
+            <img src="images/circle.png">
             <h2>강의 정리 AI</h2>
         </div>
 
@@ -242,7 +28,7 @@
             <div class="menu_item"
                  id="home_button">
 
-                <img src="home.png">
+                <img src="images/home.png">
 
                 <button class="menu_btn">
                     홈
@@ -255,7 +41,7 @@
             <div class="menu_item"
                  id="timeline_button">
 
-                <img src="timeline.png">
+                <img src="images/timeline.png">
 
                 <button class="menu_btn">
                     타임라인
@@ -265,9 +51,9 @@
 
 
             <!-- 핵심요약 -->
-            <div class="menu_item">
+            <div class="menu_item" id = "summary_button">
 
-                <img src="summary.png">
+                <img src="images/summary.png">
 
                 <button class="menu_btn">
                     핵심 요약
@@ -277,9 +63,9 @@
 
 
             <!-- 퀴즈 -->
-            <div class="menu_item">
+            <div class="menu_item" id = "quiz_button">
 
-                <img src="quiz.png">
+                <img src="images/quiz.png">
 
                 <button class="menu_btn">
                     퀴즈
@@ -289,9 +75,9 @@
 
 
             <!-- 오답노트 -->
-            <div class="menu_item">
+            <div class="menu_item" id = "wrongnote_button">
 
-                <img src="wrong.png">
+                <img src="images/wrong.png">
 
                 <button class="menu_btn">
                     오답노트
@@ -368,312 +154,244 @@
 
         </div>
 
+
+<!-- =========================
+     핵심요약 노트 화면
+========================= -->
+
+<div class="summary_page">
+
+    <!-- 상단 제목 -->
+    <div class="summary_header">
+        <h1>핵심요약 노트</h1>
+        <p>강의의 핵심 내용을 한눈에 확인해 보세요.</p>
     </div>
 
 
+    <!-- 강의 제목 -->
+    <div class="summary_lecture">
+        <h2 id="summary_lecture_title">
+            프로그래밍 기초 강의
+        </h2>
+        <span>AI 핵심요약</span>
+    </div>
 
-    <script>
 
-        /* =====================================
-           테스트용 타임라인 데이터
-        ===================================== */
+    <!-- 전체 핵심 요약 -->
+    <section class="summary_overview">
 
-        const timelineData = [
+        <h2>강의 핵심 내용</h2>
 
-            {
-                time: 0,
-                title: "강의 소개"
-            },
+        <div id="summary_overview_content">
+            강의 전체의 핵심 내용을 요약한 부분입니다.
+        </div>
 
-            {
-                time: 5,
-                title: "명사"
-            },
+    </section>
 
-            {
-                time: 10,
-                title: "가산명사"
-            },
 
-            {
-                time: 15,
-                title: "불가산 명사"
-            }
+    <!-- 소주제별 요약 -->
+    <section class="summary_topics_section">
 
-        ];
+        <h2>주제별 핵심 정리</h2>
 
+        <div id="summary_content">
 
+            <!-- JavaScript에서 소주제별 카드 생성 -->
 
-        /* =====================================
-           영상
-        ===================================== */
+        </div>
 
-        const video = document.querySelector("#video");
+    </section>
 
+</div>
 
 
-        /* =====================================
-           초 → MM:SS
-        ===================================== */
+<!-- =========================
+     퀴즈 화면
+========================= -->
 
-        function formatTime(seconds) {
+<div class="quiz_page">
 
-            const minutes =
-                Math.floor(seconds / 60);
+    <!-- 상단 제목 -->
+    <div class="quiz_header">
+        <h1>강의 퀴즈</h1>
+        <p>강의 내용을 바탕으로 학습한 내용을 확인해 보세요.</p>
+    </div>
 
-            const secondsLeft =
-                Math.floor(seconds % 60);
 
-            return (
-                String(minutes).padStart(2, "0")
-                + ":"
-                + String(secondsLeft).padStart(2, "0")
-            );
+    <!-- 강의 제목 -->
+    <div class="quiz_lecture">
+        <h2>프로그래밍 기초 강의</h2>
+        <span>AI 생성 퀴즈</span>
+    </div>
 
-        }
 
+    <!-- 퀴즈 진행 상태 -->
+    <div class="quiz_progress">
 
+        <div class="quiz_progress_text">
+            <span>퀴즈 진행 상황</span>
+            <span>1 / 5 문제</span>
+        </div>
 
-        /* =====================================
-           타임라인
-        ===================================== */
+        <div class="quiz_progress_bar">
+            <div class="quiz_progress_fill"></div>
+        </div>
 
-        const timeline =
-            document.querySelector(".timeline");
+    </div>
 
 
+    <!-- 문제 영역 -->
+    <section class="quiz_question_section">
 
-        timelineData.forEach((item, index) => {
+        <div class="quiz_question_header">
 
-            const timelineItem =
-                document.createElement("div");
+            <span class="quiz_question_number">
+                QUESTION 01
+            </span>
 
+            <span class="quiz_question_type">
+                객관식
+            </span>
 
-            timelineItem.classList.add(
-                "timeline_item"
-            );
+        </div>
 
 
-            timelineItem.innerHTML = `
+        <!-- 문제 -->
+        <h2 class="quiz_question">
+            다음 중 변수에 대한 설명으로 올바른 것은?
+        </h2>
 
-                <div class="timeline_time">
 
-                    ${formatTime(item.time)}
+        <!-- 선택지 -->
+        <div class="quiz_options">
 
-                </div>
+            <button class="quiz_option">
+                <span class="quiz_option_number">①</span>
+                <span>프로그램을 종료하는 명령어이다.</span>
+            </button>
 
+            <button class="quiz_option">
+                <span class="quiz_option_number">②</span>
+                <span>데이터를 저장하는 공간이다.</span>
+            </button>
 
-                <div class="timeline_content">
+            <button class="quiz_option">
+                <span class="quiz_option_number">③</span>
+                <span>반복문을 실행하는 조건이다.</span>
+            </button>
 
-                    <h4>
-                        ${item.title}
-                    </h4>
+            <button class="quiz_option">
+                <span class="quiz_option_number">④</span>
+                <span>프로그램의 오류를 확인하는 기능이다.</span>
+            </button>
 
-                </div>
+        </div>
 
-            `;
+    </section>
 
 
+    <!-- 하단 버튼 -->
+    <div class="quiz_navigation">
 
-            /* ===============================
-               타임라인 클릭
-            =============================== */
+        <button class="quiz_previous_button">
+            이전 문제
+        </button>
 
-            timelineItem.addEventListener(
-                "click",
-                () => {
+        <button class="quiz_next_button">
+            다음 문제
+        </button>
 
-                    /*
-                     * 해당 타임라인의
-                     * 영상 시간으로 이동
-                     */
+    </div>
 
-                    video.currentTime =
-                        item.time;
 
+    <!-- 퀴즈 안내 -->
+    <div class="quiz_notice">
+        <p>※ 현재 화면은 테스트용 예시 문제입니다.</p>
+    </div>
 
-                    /*
-                     * 영상 자동 재생
-                     */
+</div>
 
-                    video.play();
 
+<!-- =========================
+     오답노트 화면
+========================= -->
 
-                    /*
-                     * 현재 선택된 항목 표시
-                     */
+<div class="wrongnote_page">
 
-                    document
-                        .querySelectorAll(
-                            ".timeline_item"
-                        )
-                        .forEach(item => {
+    <!-- 상단 제목 -->
+    <div class="wrongnote_header">
 
-                            item.classList.remove(
-                                "active"
-                            );
+        <h1>오답노트</h1>
 
-                        });
+        <p>
+            틀린 문제를 다시 확인하고 복습해 보세요.
+        </p>
 
+    </div>
 
-                    timelineItem.classList.add(
-                        "active"
-                    );
 
-                }
-            );
+    <!-- 오답 통계 -->
+    <div class="wrongnote_stats">
 
+        <div class="wrongnote_stat_card">
 
-            timeline.appendChild(
-                timelineItem
-            );
+            <span>전체 오답</span>
 
-        });
+            <strong id="wrongnote_total">
+                3
+            </strong>
 
+        </div>
 
 
-        /* =====================================
-           영상 재생 중 현재 타임라인 표시
-        ===================================== */
+        <div class="wrongnote_stat_card">
 
-        video.addEventListener(
-            "timeupdate",
-            () => {
+            <span>복습 완료</span>
 
-                let currentIndex = 0;
+            <strong id="wrongnote_completed">
+                0
+            </strong>
 
+        </div>
 
-                /*
-                 * 현재 영상 시간이
-                 * 어느 구간에 속하는지 찾음
-                 */
 
-                for (
-                    let i = 0;
-                    i < timelineData.length;
-                    i++
-                ) {
+        <div class="wrongnote_stat_card">
 
-                    if (
-                        video.currentTime
-                        >= timelineData[i].time
-                    ) {
+            <span>복습 필요</span>
 
-                        currentIndex = i;
+            <strong id="wrongnote_remaining">
+                3
+            </strong>
 
-                    } else {
+        </div>
 
-                        break;
+    </div>
 
-                    }
 
-                }
+    <!-- 오답 목록 -->
+    <section class="wrongnote_list_section">
 
+        <div class="wrongnote_list_header">
 
-                /*
-                 * 모든 항목의 active 제거
-                 */
+            <h2>틀린 문제 모아보기</h2>
 
-                document
-                    .querySelectorAll(
-                        ".timeline_item"
-                    )
-                    .forEach(
-                        item => {
+            <span id="wrongnote_count">
+                총 3문제
+            </span>
 
-                            item.classList.remove(
-                                "active"
-                            );
+        </div>
 
-                        }
-                    );
 
+        <!-- 오답 문제 출력 영역 -->
+        <div id="wrongnote_list">
 
-                /*
-                 * 현재 항목 active
-                 */
+            <!-- JavaScript에서 문제 카드 생성 -->
 
-                const items =
-                    document.querySelectorAll(
-                        ".timeline_item"
-                    );
+        </div>
 
+    </section>
 
-                if (items[currentIndex]) {
-
-                    items[currentIndex]
-                        .classList.add(
-                            "active"
-                        );
-
-                }
-
-            }
-        );
-
-
-
-        /* =====================================
-           타임라인 버튼
-        ===================================== */
-
-        const timelineButton =
-            document.querySelector(
-                "#timeline_button"
-            );
-
-
-        const timelinePage =
-            document.querySelector(
-                ".timeline_page"
-            );
-
-
-        const content =
-            document.querySelector(
-                ".content"
-            );
-
-
-        timelineButton.addEventListener(
-            "click",
-            () => {
-
-                content.style.display =
-                    "none";
-
-                timelinePage.style.display =
-                    "block";
-
-            }
-        );
-
-
-
-        /* =====================================
-           홈 버튼
-        ===================================== */
-
-        const homeButton =
-            document.querySelector(
-                "#home_button"
-            );
-
-
-        homeButton.addEventListener(
-            "click",
-            () => {
-
-                timelinePage.style.display =
-                    "none";
-
-                content.style.display =
-                    "block";
-
-            }
-        );
-
-    </script>
-
+</div>
+<script src="3.js"></script>
 </body>
 </html>
